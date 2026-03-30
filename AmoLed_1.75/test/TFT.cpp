@@ -8,16 +8,18 @@
 #include "_glcdfont.h"
 
 Arduino_TFT::Arduino_TFT(
-    DataBus *bus,
+    void *bus,
     int8_t rst, uint8_t r, bool ips, int16_t w, int16_t h, uint8_t col_offset1, uint8_t row_offset1, uint8_t col_offset2, uint8_t row_offset2) :
     Arduino_GFX(w, h),
-    _bus(bus), _rst(rst), _ips(ips), COL_OFFSET1(col_offset1), ROW_OFFSET1(row_offset1), COL_OFFSET2(col_offset2), ROW_OFFSET2(row_offset2)
+    _bus((ESP32QSPI*) bus), _rst(rst), _ips(ips), COL_OFFSET1(col_offset1), ROW_OFFSET1(row_offset1), COL_OFFSET2(col_offset2), ROW_OFFSET2(row_offset2)
 {
+  dbg_func;
   _rotation = r;
 }
 
 bool Arduino_TFT::begin(int32_t speed)
 {
+  dbg_func;
   if (speed != -3)
   {
     if (_override_datamode != -1)
@@ -45,22 +47,26 @@ bool Arduino_TFT::begin(int32_t speed)
 
 void Arduino_TFT::startWrite()
 {
+  dbg_func;
   _bus->beginWrite();
 }
 
 void Arduino_TFT::writePixelPreclipped(int16_t x, int16_t y, uint16_t color)
 {
+  dbg_func;
   writeAddrWindow(x, y, 1, 1);
   _bus->write16(color);
 }
 
 void Arduino_TFT::writeRepeat(uint16_t color, uint32_t len)
 {
+  dbg_func;
   _bus->writeRepeat(color, len);
 }
 
 void Arduino_TFT::writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 {
+  dbg_func;
   if (_ordered_in_range(x, 0, _max_x) && h)
   { // X on screen, nonzero height
     if (h < 0)
@@ -91,6 +97,7 @@ void Arduino_TFT::writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color
 
 void Arduino_TFT::writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
 {
+  dbg_func;
   if (_ordered_in_range(y, 0, _max_y) && w)
   { // Y on screen, nonzero width
     if (w < 0)
@@ -123,6 +130,7 @@ void Arduino_TFT::writeFillRectPreclipped(
     int16_t x, int16_t y,
     int16_t w, int16_t h, uint16_t color)
 {
+  dbg_func;
 #ifdef ESP8266
   yield();
 #endif
@@ -132,12 +140,14 @@ void Arduino_TFT::writeFillRectPreclipped(
 
 void Arduino_TFT::endWrite()
 {
+  dbg_func;
   _bus->endWrite();
 }
 
 void Arduino_TFT::setAddrWindow(int16_t x0, int16_t y0, uint16_t w,
                                 uint16_t h)
 {
+  dbg_func;
   startWrite();
 
   writeAddrWindow(x0, y0, w, h);
@@ -147,6 +157,7 @@ void Arduino_TFT::setAddrWindow(int16_t x0, int16_t y0, uint16_t w,
 
 void Arduino_TFT::setRotation(uint8_t r)
 {
+  dbg_func;
   Arduino_GFX::setRotation(r);
   switch (_rotation)
   {
@@ -191,21 +202,25 @@ void Arduino_TFT::setRotation(uint8_t r)
 
 void Arduino_TFT::writeColor(uint16_t color)
 {
+  dbg_func;
   _bus->write16(color);
 }
 
 void Arduino_TFT::writeBytes(uint8_t *data, uint32_t len)
 {
+  dbg_func;
   _bus->writeBytes(data, len);
 }
 
 void Arduino_TFT::writePixels(uint16_t *data, uint32_t len)
 {
+  dbg_func;
   _bus->writePixels(data, len);
 }
 
 void Arduino_TFT::pushColor(uint16_t color)
 {
+  dbg_func;
   _bus->beginWrite();
   writeColor(color);
   _bus->endWrite();
@@ -213,6 +228,7 @@ void Arduino_TFT::pushColor(uint16_t color)
 
 void Arduino_TFT::writeSlashLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
+  dbg_func;
   int16_t dx;
   int16_t dy;
   int16_t err;
@@ -267,16 +283,19 @@ void Arduino_TFT::writeSlashLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 
 void Arduino_TFT::writeIndexedPixels(uint8_t *bitmap, uint16_t *color_index, uint32_t len)
 {
+  dbg_func;
   _bus->writeIndexedPixels(bitmap, color_index, len);
 }
 
 void Arduino_TFT::writeIndexedPixelsDouble(uint8_t *bitmap, uint16_t *color_index, uint32_t len)
 {
+  dbg_func;
   _bus->writeIndexedPixelsDouble(bitmap, color_index, len);
 }
 
 void Arduino_TFT::drawYCbCrBitmap(int16_t x, int16_t y, uint8_t *yData, uint8_t *cbData, uint8_t *crData, int16_t w, int16_t h)
 {
+  dbg_func;
   startWrite();
   writeAddrWindow(0, 0, w, h);
   _bus->writeYCbCrPixels(yData, cbData, crData, w, h);
@@ -287,6 +306,7 @@ void Arduino_TFT::drawBitmap(
     int16_t x, int16_t y,
     const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color, uint16_t bg)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -332,6 +352,7 @@ void Arduino_TFT::drawBitmap(
     int16_t x, int16_t y,
     uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -376,6 +397,7 @@ void Arduino_TFT::drawGrayscaleBitmap(
     int16_t x, int16_t y,
     const uint8_t bitmap[], int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -413,6 +435,7 @@ void Arduino_TFT::drawGrayscaleBitmap(
     int16_t x, int16_t y,
     uint8_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -450,6 +473,7 @@ void Arduino_TFT::drawIndexedBitmap(
     int16_t x, int16_t y,
     uint8_t *bitmap, uint16_t *color_index, int16_t w, int16_t h, int16_t x_skip)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -491,6 +515,7 @@ void Arduino_TFT::drawIndexedBitmap(
 void Arduino_TFT::draw16bitRGBBitmapWithMask(int16_t x, int16_t y,
                                              uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -556,6 +581,7 @@ void Arduino_TFT::draw16bitRGBBitmap(
     int16_t x, int16_t y,
     const uint16_t bitmap[], int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -591,6 +617,7 @@ void Arduino_TFT::draw16bitRGBBitmap(
     int16_t x, int16_t y,
     uint16_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((y + h - 1) < 0) || // Outside top
       (y > _max_y)         // Outside bottom
@@ -663,6 +690,7 @@ void Arduino_TFT::draw16bitBeRGBBitmap(
     int16_t x, int16_t y,
     uint16_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -719,6 +747,7 @@ void Arduino_TFT::draw16bitBeRGBBitmapR1(
     int16_t x, int16_t y,
     uint16_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + h - 1) < 0) || // Outside left
       ((y + w - 1) < 0) || // Outside top
@@ -750,6 +779,7 @@ void Arduino_TFT::draw24bitRGBBitmap(
     int16_t x, int16_t y,
     const uint8_t bitmap[], int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -787,6 +817,7 @@ void Arduino_TFT::draw24bitRGBBitmap(
     int16_t x, int16_t y,
     uint8_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   if (
       ((x + w - 1) < 0) || // Outside left
       ((y + h - 1) < 0) || // Outside top
@@ -822,6 +853,7 @@ void Arduino_TFT::draw24bitRGBBitmap(
 
 void Arduino_TFT::drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg)
 {
+  dbg_func;
   uint16_t block_w;
   uint16_t block_h;
 

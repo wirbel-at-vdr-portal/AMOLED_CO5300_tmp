@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #include "GFX.h"
 #include "TFT.h"
 
@@ -20,7 +22,7 @@ protected:
 
 public:
   Arduino_CO5300(
-      DataBus *bus, int8_t rst = -1, uint8_t r = 0,
+      void *bus, int8_t rst = -1, uint8_t r = 0,
       int16_t w = CO5300_MAXWIDTH, int16_t h = CO5300_MAXHEIGHT,
       uint8_t col_offset1 = 0, uint8_t row_offset1 = 0, uint8_t col_offset2 = 0, uint8_t row_offset2 = 0);
 

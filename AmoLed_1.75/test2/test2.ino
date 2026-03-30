@@ -20,14 +20,14 @@
 
 
 
-AMOLED_CO5300 *tft;
+AMOLED_CO5300 *tft = new AMOLED_CO5300(466,466);
 
 
 
 void setup(void) {
   Serial.begin(115200);
   delay(1000);
-  tft = new AMOLED_CO5300(466,466);
+  //tft = new AMOLED_CO5300(466,466);
 
   Wire.begin(SDA, SCL);
 
@@ -36,17 +36,40 @@ void setup(void) {
   int numCols = LCD_WIDTH / 8;
   int numRows = LCD_HEIGHT / 10;
 
-  //#ifdef GFX_EXTRA_PRE_INIT
-  //GFX_EXTRA_PRE_INIT();
-  //#endif
+
+
+
 
   // Init Display
   if (!tft->begin()) {
     Serial.println("gfx->begin() failed!");
   }
-  tft->fillScreen(BLACK);
+  tft->fillScreen(MAGENTA);
+  // ---------------- working fine until here. --------------------
 
-  tft->setBrightness(255);
+tft->Debug(true);
+  Serial.println("before tft->setBrightness(255);");
+
+
+  tft->setBrightness(255); delay(200);
+
+  Serial.println("white line, 0 deg");
+  for(int i=0; i<100; i++) tft->drawPixel(100+i, 100, WHITE);
+
+  Serial.println("red line, 90 deg");
+  tft->setRotation(1);
+  for(int i=0; i<100; i++) tft->drawPixel(100+i, 100, RED);
+
+  Serial.println("blue line, 180 deg");
+  tft->setRotation(2);
+  for(int i=0; i<100; i++) tft->drawPixel(100+i, 100, BLUE);
+
+  Serial.println("yellow line, 270 deg");
+  tft->setRotation(2);
+  for(int i=0; i<100; i++) tft->drawPixel(100+i, 100, YELLOW);
+
+tft->Debug(false);
+
 
   tft->setTextColor(GREEN);
   for (int x = 0; x < numRows; x++) {
@@ -66,7 +89,7 @@ void setup(void) {
     }
   }
 
-  delay(5000);  // 5 seconds
+
 }
 #define BLACK    0x0000
 #define BLUE     0x001F

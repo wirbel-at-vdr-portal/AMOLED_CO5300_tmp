@@ -56,6 +56,7 @@ Arduino_GFX::Arduino_GFX(int16_t w, int16_t h) : Arduino_G(w, h)
 void Arduino_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                             uint16_t color)
 {
+  dbg_func;
   if (x0 == x1)
   {
     if (y0 > y1)
@@ -91,6 +92,7 @@ void Arduino_GFX::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 void Arduino_GFX::writeSlashLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                                  uint16_t color)
 {
+  dbg_func;
   bool steep = _diff(y1, y0) > _diff(x1, x0);
   if (steep)
   {
@@ -139,6 +141,7 @@ __attribute__((always_inline)) inline void Arduino_GFX::startWrite()
 
 void Arduino_GFX::writePixel(int16_t x, int16_t y, uint16_t color)
 {
+  dbg_func;
   if (_ordered_in_range(y, 0, _max_y))
   {
     if (_isRoundMode)
@@ -165,6 +168,7 @@ void Arduino_GFX::writePixel(int16_t x, int16_t y, uint16_t color)
 /**************************************************************************/
 void Arduino_GFX::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writePixel(x, y, color);
   endWrite();
@@ -182,6 +186,7 @@ void Arduino_GFX::drawPixel(int16_t x, int16_t y, uint16_t color)
 void Arduino_GFX::writeFastVLine(int16_t x, int16_t y,
                                  int16_t h, uint16_t color)
 {
+  dbg_func;
   for (int16_t i = y; i < y + h; i++)
   {
     writePixel(x, i, color);
@@ -200,6 +205,7 @@ void Arduino_GFX::writeFastVLine(int16_t x, int16_t y,
 void Arduino_GFX::writeFastHLine(int16_t x, int16_t y,
                                  int16_t w, uint16_t color)
 {
+  dbg_func;
   for (int16_t i = x; i < x + w; i++)
   {
     writePixel(i, y, color);
@@ -229,6 +235,7 @@ void Arduino_GFX::writeFastHLine(int16_t x, int16_t y,
 void Arduino_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                                 uint16_t color)
 {
+  dbg_func;
   if (w && h)
   { // Nonzero width and height?
     if (w < 0)
@@ -291,6 +298,7 @@ void Arduino_GFX::writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 void Arduino_GFX::writeFillRectPreclipped(int16_t x, int16_t y, int16_t w, int16_t h,
                                           uint16_t color)
 {
+  dbg_func;
   // Overwrite in subclasses if desired!
   for (int16_t i = y; i < y + h; i++)
   {
@@ -319,6 +327,7 @@ __attribute__((always_inline)) inline void Arduino_GFX::endWrite()
 void Arduino_GFX::drawFastVLine(int16_t x, int16_t y,
                                 int16_t h, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeFastVLine(x, y, h, color);
   endWrite();
@@ -336,6 +345,7 @@ void Arduino_GFX::drawFastVLine(int16_t x, int16_t y,
 void Arduino_GFX::drawFastHLine(int16_t x, int16_t y,
                                 int16_t w, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeFastHLine(x, y, w, color);
   endWrite();
@@ -354,6 +364,7 @@ void Arduino_GFX::drawFastHLine(int16_t x, int16_t y,
 void Arduino_GFX::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                            uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeFillRect(x, y, w, h, color);
   endWrite();
@@ -383,6 +394,7 @@ void Arduino_GFX::fillScreen(uint16_t color)
 void Arduino_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                            uint16_t color)
 {
+  dbg_func;
   // Update in subclasses if desired!
   startWrite();
   writeLine(x0, y0, x1, y1, color);
@@ -401,6 +413,7 @@ void Arduino_GFX::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 void Arduino_GFX::drawCircle(int16_t x, int16_t y,
                              int16_t r, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeEllipseHelper(x, y, r, r, 0xf, color);
   endWrite();
@@ -421,6 +434,7 @@ void Arduino_GFX::writeEllipseHelper(int32_t x, int32_t y,
                                      int32_t rx, int32_t ry,
                                      uint8_t cornername, uint16_t color)
 {
+  dbg_func;
   if (rx < 0 || ry < 0 || ((rx == 0) && (ry == 0)))
   {
     return;
@@ -509,6 +523,7 @@ void Arduino_GFX::writeEllipseHelper(int32_t x, int32_t y,
 void Arduino_GFX::fillCircle(int16_t x, int16_t y,
                              int16_t r, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeFillEllipseHelper(x, y, r, r, 3, 0, color);
   endWrite();
@@ -530,6 +545,7 @@ void Arduino_GFX::writeFillEllipseHelper(int32_t x, int32_t y,
                                          int32_t rx, int32_t ry,
                                          uint8_t corners, int16_t delta, uint16_t color)
 {
+  dbg_func;
   if (rx < 0 || ry < 0 || ((rx == 0) && (ry == 0)))
   {
     return;
@@ -608,6 +624,7 @@ void Arduino_GFX::writeFillEllipseHelper(int32_t x, int32_t y,
 /**************************************************************************/
 void Arduino_GFX::drawEllipse(int16_t x, int16_t y, int16_t rx, int16_t ry, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeEllipseHelper(x, y, rx, ry, 0xf, color);
   endWrite();
@@ -627,6 +644,7 @@ void Arduino_GFX::drawEllipse(int16_t x, int16_t y, int16_t rx, int16_t ry, uint
 /**************************************************************************/
 void Arduino_GFX::fillEllipse(int16_t x, int16_t y, int16_t rx, int16_t ry, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeFillEllipseHelper(x, y, rx, ry, 3, 0, color);
   endWrite();
@@ -646,6 +664,7 @@ void Arduino_GFX::fillEllipse(int16_t x, int16_t y, int16_t rx, int16_t ry, uint
 /**************************************************************************/
 void Arduino_GFX::drawArc(int16_t x, int16_t y, int16_t r1, int16_t r2, float start, float end, uint16_t color)
 {
+  dbg_func;
   if (r1 < r2)
   {
     _swap_int16_t(r1, r2);
@@ -693,6 +712,7 @@ void Arduino_GFX::drawArc(int16_t x, int16_t y, int16_t r1, int16_t r2, float st
 /**************************************************************************/
 void Arduino_GFX::fillArc(int16_t x, int16_t y, int16_t r1, int16_t r2, float start, float end, uint16_t color)
 {
+  dbg_func;
   if (r1 < r2)
   {
     _swap_int16_t(r1, r2);
@@ -737,6 +757,7 @@ void Arduino_GFX::fillArc(int16_t x, int16_t y, int16_t r1, int16_t r2, float st
 /**************************************************************************/
 void Arduino_GFX::writeFillArcHelper(int16_t cx, int16_t cy, int16_t oradius, int16_t iradius, float start, float end, uint16_t color)
 {
+  dbg_func;
   if ((start == 90.0) || (start == 180.0) || (start == 270.0) || (start == 360.0))
   {
     start -= 0.1;
@@ -844,6 +865,7 @@ void Arduino_GFX::writeFillArcHelper(int16_t cx, int16_t cy, int16_t oradius, in
 void Arduino_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
                            uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeFastHLine(x, y, w, color);
   writeFastHLine(x, y + h - 1, w, color);
@@ -866,6 +888,7 @@ void Arduino_GFX::drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
 void Arduino_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
                                 int16_t h, int16_t r, uint16_t color)
 {
+  dbg_func;
   int16_t max_radius = ((w < h) ? w : h) / 2; // 1/2 minor axis
   if (r > max_radius)
     r = max_radius;
@@ -897,6 +920,7 @@ void Arduino_GFX::drawRoundRect(int16_t x, int16_t y, int16_t w,
 void Arduino_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
                                 int16_t h, int16_t r, uint16_t color)
 {
+  dbg_func;
   int16_t max_radius = ((w < h) ? w : h) / 2; // 1/2 minor axis
   if (r > max_radius)
     r = max_radius;
@@ -924,6 +948,7 @@ void Arduino_GFX::fillRoundRect(int16_t x, int16_t y, int16_t w,
 void Arduino_GFX::drawTriangle(int16_t x0, int16_t y0,
                                int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
+  dbg_func;
   startWrite();
   writeLine(x0, y0, x1, y1, color);
   writeLine(x1, y1, x2, y2, color);
@@ -946,6 +971,7 @@ void Arduino_GFX::drawTriangle(int16_t x0, int16_t y0,
 void Arduino_GFX::fillTriangle(int16_t x0, int16_t y0,
                                int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
+  dbg_func;
   int16_t a, b, y, last;
 
   // Sort coordinates by Y order (y2 >= y1 >= y0)
@@ -1064,6 +1090,7 @@ void Arduino_GFX::fillTriangle(int16_t x0, int16_t y0,
 void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
                              const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color)
 {
+  dbg_func;
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
 
@@ -1105,6 +1132,7 @@ void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
                              const uint8_t bitmap[], int16_t w, int16_t h,
                              uint16_t color, uint16_t bg)
 {
+  dbg_func;
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
 
@@ -1141,6 +1169,7 @@ void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
                              uint8_t *bitmap, int16_t w, int16_t h, uint16_t color)
 {
+  dbg_func;
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
 
@@ -1181,6 +1210,7 @@ void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
                              uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg)
 {
+  dbg_func;
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
 
@@ -1221,6 +1251,7 @@ void Arduino_GFX::drawBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawXBitmap(int16_t x, int16_t y,
                               const uint8_t bitmap[], int16_t w, int16_t h, uint16_t color)
 {
+  dbg_func;
   int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
   uint8_t byte = 0;
 
@@ -1261,6 +1292,7 @@ void Arduino_GFX::drawXBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
                                       const uint8_t bitmap[], int16_t w, int16_t h)
 {
+  dbg_func;
   uint8_t v;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1287,6 +1319,7 @@ void Arduino_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
                                       uint8_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   uint8_t v;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1317,6 +1350,7 @@ void Arduino_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
                                       const uint8_t bitmap[], const uint8_t mask[],
                                       int16_t w, int16_t h)
 {
+  dbg_func;
   int16_t bw = (w + 7) / 8; // Bitmask scanline pad = whole byte
   uint8_t byte = 0;
   uint8_t v;
@@ -1359,6 +1393,7 @@ void Arduino_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawGrayscaleBitmap(int16_t x, int16_t y,
                                       uint8_t *bitmap, uint8_t *mask, int16_t w, int16_t h)
 {
+  dbg_func;
   int16_t bw = (w + 7) / 8; // Bitmask scanline pad = whole byte
   uint8_t byte = 0;
   uint8_t v;
@@ -1401,6 +1436,7 @@ void Arduino_GFX::drawIndexedBitmap(
     int16_t x, int16_t y,
     uint8_t *bitmap, uint16_t *color_index, int16_t w, int16_t h, int16_t x_skip)
 {
+  dbg_func;
   int32_t offset = 0;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1431,6 +1467,7 @@ void Arduino_GFX::drawIndexedBitmap(
     int16_t x, int16_t y,
     uint8_t *bitmap, uint16_t *color_index, uint8_t chroma_key, int16_t w, int16_t h, int16_t x_skip)
 {
+  dbg_func;
   int32_t offset = 0;
   uint8_t color_key;
   startWrite();
@@ -1462,6 +1499,7 @@ void Arduino_GFX::drawIndexedBitmap(
 void Arduino_GFX::draw3bitRGBBitmap(int16_t x, int16_t y,
                                     uint8_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0, idx = 0;
   uint8_t c = 0;
   uint16_t d;
@@ -1503,6 +1541,7 @@ void Arduino_GFX::draw3bitRGBBitmap(int16_t x, int16_t y,
 void Arduino_GFX::draw16bitRGBBitmap(int16_t x, int16_t y,
                                      const uint16_t bitmap[], int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1528,6 +1567,7 @@ void Arduino_GFX::draw16bitRGBBitmap(int16_t x, int16_t y,
 void Arduino_GFX::draw16bitRGBBitmap(int16_t x, int16_t y,
                                      uint16_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1555,6 +1595,7 @@ void Arduino_GFX::draw16bitRGBBitmapWithTranColor(
     int16_t x, int16_t y,
     uint16_t *bitmap, uint16_t transparent_color, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   uint16_t color;
   startWrite();
@@ -1585,6 +1626,7 @@ void Arduino_GFX::draw16bitRGBBitmapWithTranColor(
 void Arduino_GFX::draw16bitBeRGBBitmap(int16_t x, int16_t y,
                                        uint16_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   uint16_t p;
   startWrite();
@@ -1614,6 +1656,7 @@ void Arduino_GFX::draw16bitBeRGBBitmap(int16_t x, int16_t y,
 void Arduino_GFX::draw16bitBeRGBBitmapR1(int16_t x, int16_t y,
                                          uint16_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   uint16_t p;
   startWrite();
@@ -1647,6 +1690,7 @@ void Arduino_GFX::draw16bitRGBBitmapWithMask(int16_t x, int16_t y,
                                              const uint16_t bitmap[], const uint8_t mask[],
                                              int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   int16_t bw = (w + 7) / 8; // Bitmask scanline pad = whole byte
   uint8_t byte = 0;
@@ -1689,6 +1733,7 @@ void Arduino_GFX::draw16bitRGBBitmapWithMask(int16_t x, int16_t y,
 void Arduino_GFX::draw16bitRGBBitmapWithMask(int16_t x, int16_t y,
                                              uint16_t *bitmap, uint8_t *mask, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0, maskIdx = 0;
   uint8_t byte = 0;
   startWrite();
@@ -1727,6 +1772,7 @@ void Arduino_GFX::draw16bitRGBBitmapWithMask(int16_t x, int16_t y,
 void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
                                      const uint8_t bitmap[], int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1753,6 +1799,7 @@ void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
 void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
                                      uint8_t *bitmap, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   startWrite();
   for (int16_t j = 0; j < h; j++, y++)
@@ -1783,6 +1830,7 @@ void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
                                      const uint8_t bitmap[], const uint8_t mask[],
                                      int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   int16_t bw = (w + 7) / 8; // Bitmask scanline pad = whole byte
   uint8_t byte = 0;
@@ -1825,6 +1873,7 @@ void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
 void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
                                      uint8_t *bitmap, uint8_t *mask, int16_t w, int16_t h)
 {
+  dbg_func;
   int32_t offset = 0;
   int16_t bw = (w + 7) / 8; // Bitmask scanline pad = whole byte
   uint8_t byte = 0;
@@ -1868,6 +1917,7 @@ void Arduino_GFX::draw24bitRGBBitmap(int16_t x, int16_t y,
 void Arduino_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
                            uint16_t color, uint16_t bg)
 {
+  dbg_func;
   int16_t block_w, block_h, curX, curY, curW, curH;
 
 
@@ -2099,6 +2149,7 @@ void Arduino_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 /**************************************************************************/
 size_t Arduino_GFX::write(uint8_t c)
 {
+  dbg_func;
   if (gfxFont) // custom font
   {
     if (c == '\n') // Newline
@@ -2155,6 +2206,7 @@ size_t Arduino_GFX::write(uint8_t c)
 /**************************************************************************/
 void Arduino_GFX::setTextSize(uint8_t s)
 {
+  dbg_func;
   setTextSize(s, s, 0);
 }
 
@@ -2167,6 +2219,7 @@ void Arduino_GFX::setTextSize(uint8_t s)
 /**************************************************************************/
 void Arduino_GFX::setTextSize(uint8_t s_x, uint8_t s_y)
 {
+  dbg_func;
   setTextSize(s_x, s_y, 0);
 }
 
@@ -2180,6 +2233,7 @@ void Arduino_GFX::setTextSize(uint8_t s_x, uint8_t s_y)
 /**************************************************************************/
 void Arduino_GFX::setTextSize(uint8_t s_x, uint8_t s_y, uint8_t pixel_margin)
 {
+  dbg_func;
   text_pixel_margin = ((pixel_margin < s_x) && (pixel_margin < s_y)) ? pixel_margin : 0;
   textsize_x = (s_x > 0) ? s_x : 1;
   textsize_y = (s_y > 0) ? s_y : 1;
@@ -2193,6 +2247,7 @@ void Arduino_GFX::setTextSize(uint8_t s_x, uint8_t s_y, uint8_t pixel_margin)
 /**************************************************************************/
 void Arduino_GFX::setRotation(uint8_t r)
 {
+  dbg_func;
   _rotation = (r & 7);
   switch (_rotation)
   {
@@ -2227,6 +2282,7 @@ void Arduino_GFX::setRotation(uint8_t r)
 /**************************************************************************/
 void Arduino_GFX::setFont(const GFXfont *f)
 {
+  dbg_func;
   gfxFont = (GFXfont *)f;
 }
 
@@ -2256,7 +2312,7 @@ void Arduino_GFX::flush(bool force_flush)
 void Arduino_GFX::charBounds(char c, int16_t *x, int16_t *y,
                              int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy)
 {
-
+  dbg_func;
   if (gfxFont) // custom font
   {
     if (c == '\n') // Newline
@@ -2359,6 +2415,7 @@ void Arduino_GFX::charBounds(char c, int16_t *x, int16_t *y,
 void Arduino_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
                                 int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
 {
+  dbg_func;
   uint8_t c; // Current character
 
   *x1 = x;
@@ -2399,6 +2456,7 @@ void Arduino_GFX::getTextBounds(const char *str, int16_t x, int16_t y,
 void Arduino_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
                                 int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
 {
+  dbg_func;
   if (str.length() != 0)
   {
     getTextBounds(const_cast<char *>(str.c_str()), x, y, x1, y1, w, h);
@@ -2420,6 +2478,7 @@ void Arduino_GFX::getTextBounds(const String &str, int16_t x, int16_t y,
 void Arduino_GFX::getTextBounds(const __FlashStringHelper *str,
                                 int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
 {
+  dbg_func;
   uint8_t *s = (uint8_t *)str, c;
 
   *x1 = x;
@@ -2479,6 +2538,7 @@ void Arduino_GFX::displayOff()
 /**************************************************************************/
 bool Arduino_GFX::enableRoundMode()
 {
+  dbg_func;
   if (WIDTH != HEIGHT)
   {
     return false;

@@ -1,5 +1,6 @@
 #include "CO5300.h"
 
+
 static const uint8_t co5300_init_operations[] = {
   BEGIN_WRITE,
   WRITE_COMMAND_8, CO5300_C_SLPOUT, // Sleep Out
@@ -20,7 +21,7 @@ static const uint8_t co5300_init_operations[] = {
 
 
 Arduino_CO5300::Arduino_CO5300(
-    DataBus *bus, int8_t rst, uint8_t r, int16_t w, int16_t h,
+    void *bus, int8_t rst, uint8_t r, int16_t w, int16_t h,
     uint8_t col_offset1, uint8_t row_offset1, uint8_t col_offset2, uint8_t row_offset2)
     : Arduino_TFT(
           bus, rst, r, false /* ips */, w, h,
@@ -30,11 +31,13 @@ Arduino_CO5300::Arduino_CO5300(
 
 bool Arduino_CO5300::begin(int32_t speed)
 {
+  dbg_func;
   return Arduino_TFT::begin(speed);
 }
 
 void Arduino_CO5300::writeAddrWindow(int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
+  dbg_func;
   if ((x != _currentX) || (w != _currentW) || (y != _currentY) || (h != _currentH))
   {
     _currentX = x;
@@ -59,6 +62,7 @@ void Arduino_CO5300::writeAddrWindow(int16_t x, int16_t y, uint16_t w, uint16_t 
 /**************************************************************************/
 void Arduino_CO5300::setRotation(uint8_t r)
 {
+  dbg_func;
   // CO5300 does not support rotation
   Arduino_TFT::setRotation(r);
   switch (_rotation)
@@ -88,6 +92,7 @@ void Arduino_CO5300::invertDisplay(bool i)
 
 void Arduino_CO5300::displayOn(void)
 {
+  dbg_func;
   _bus->sendCommand(CO5300_C_DISPON);
   delay(CO5300_SLPIN_DELAY);
   _bus->sendCommand(CO5300_C_SLPOUT);
@@ -97,6 +102,7 @@ void Arduino_CO5300::displayOn(void)
 
 void Arduino_CO5300::displayOff(void)
 {
+  dbg_func;
   _bus->sendCommand(CO5300_C_DISPOFF);
   delay(CO5300_SLPIN_DELAY);
   _bus->sendCommand(CO5300_C_SLPIN);
@@ -106,6 +112,7 @@ void Arduino_CO5300::displayOff(void)
 
 void Arduino_CO5300::setBrightness(uint8_t brightness)
 {
+  dbg_func;
   _bus->beginWrite();
   _bus->writeC8D8(CO5300_W_WDBRIGHTNESSVALNOR, brightness);
   _bus->endWrite();
@@ -113,6 +120,7 @@ void Arduino_CO5300::setBrightness(uint8_t brightness)
 
 void Arduino_CO5300::setContrast(uint8_t Contrast)
 {
+  dbg_func;
   switch (Contrast)
   {
   case CO5300_CONTRAST_OFF:
@@ -145,6 +153,7 @@ void Arduino_CO5300::setContrast(uint8_t Contrast)
 // a series of LCD commands stored in PROGMEM byte array.
 void Arduino_CO5300::tftInit()
 {
+  dbg_func;
   if (_rst != -1)
   {
     pinMode(_rst, OUTPUT);

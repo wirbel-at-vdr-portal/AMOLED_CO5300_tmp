@@ -8,7 +8,7 @@
 
 #ifdef DEBUG_FUNC
 #define dbg_func do { \
-  Serial.print(__FILE__);   Serial.print(":");  Serial.print(__LINE__);   Serial.print(" ");   Serial.println(__PRETTY_FUNCTION__); \
+  /*Serial.print(__FILE__);   Serial.print(":");  Serial.print(__LINE__);   Serial.print(" "); */  Serial.println(__PRETTY_FUNCTION__); \
   } while(0)
 #else
 #define dbg_func

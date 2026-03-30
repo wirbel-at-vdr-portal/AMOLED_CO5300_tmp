@@ -16,7 +16,7 @@
 
 #ifdef DEBUG_FUNC
 #define dbg_func do { \
-  Serial.print(__FILE__);   Serial.print(":");  Serial.print(__LINE__);   Serial.print(" ");   Serial.println(__PRETTY_FUNCTION__); \
+  if (debug) { /*Serial.print(__FILE__);   Serial.print(":");  Serial.print(__LINE__);   Serial.print(" "); */ Serial.println(__PRETTY_FUNCTION__); } \
   } while(0)
 #else
 #define dbg_func
@@ -24,7 +24,7 @@
 
 #ifdef DEBUG_ARG
 #define dbg_arg(Name) do { \
-  Serial.print( xstr(Name) ); Serial.print(" = 0x"); Serial.println(Name,HEX); \
+  if (debug) { Serial.print( xstr(Name) ); Serial.print(" = 0x"); Serial.println(Name,HEX); } \
   } while(0)
 #else
 #define dbg_func
@@ -59,16 +59,7 @@
 #define LCD_HEIGHT 466 
 
 
-/*
-Arduino_CO5300 *tft = new Arduino_CO5300(
-  bus,
-  LCD_RESET // RST,
-  0 // rotation,
-  LCD_WIDTH // width,
-  LCD_HEIGHT // height
-  , 6, 0, 0, 0);
-*/
-
+/* class ESP32QSPI is working. */ 
 class ESP32QSPI {
 public:
   #define ESP32QSPI_MAX_PIXELS_AT_ONCE    1024
@@ -98,6 +89,7 @@ public:
      } spi_operation_type_t;
 
 private:
+  bool debug;
   int8_t _cs, _sck, _mosi, _miso, _quadwp, _quadhd;
   bool _is_shared_interface;
   int32_t _speed;
@@ -148,7 +140,11 @@ public:
             int8_t mosi, int8_t miso, int8_t quadwp, int8_t quadhd,
             bool is_shared_interface = false) :
       _cs(cs), _sck(sck), _mosi(mosi), _miso(miso), _quadwp(quadwp), _quadhd(quadhd),
-      _is_shared_interface(is_shared_interface) {}
+      _is_shared_interface(is_shared_interface) {
+      debug = false;
+      }
+
+  bool Debug(bool on) { debug = on; }
 
   bool begin(int32_t speed = 40000000, int8_t dataMode = -1) {
      dbg_func;
@@ -936,16 +932,17 @@ public:
      }
 };
 
-
+ESP32QSPI* spi = new ESP32QSPI(CS, SCK, SDIO0, SDIO1, SDIO2, SDIO3, false);
 
 
 class AMOLED_CO5300 : public Adafruit_GFX {
 private:
-  ESP32QSPI* spi;
+  //ESP32QSPI* spi;
   int8_t ResetPin;
   int16_t _currentX, _currentY, _currentW, _currentH;
   uint8_t _xStart, _yStart;
   bool _ips;
+  bool debug;
 
 protected:
 
@@ -960,7 +957,7 @@ public:
                 int8_t quadwp = SDIO2,
                 int8_t quadhd = SDIO3,
                 bool shared_spi = false)
-   : Adafruit_GFX(w, h), ResetPin(reset), _ips(false) {
+   : Adafruit_GFX(w, h), ResetPin(reset), _ips(false), debug(false) {
    /*
   _width = WIDTH;
   _height = HEIGHT;
@@ -972,19 +969,22 @@ public:
   _cp437 = false;
   gfxFont = NULL;
   */
-  spi = new ESP32QSPI(cs, sck, mosi, miso, quadwp, quadhd, shared_spi);
+  dbg_func;
+  //spi = new ESP32QSPI(cs, sck, mosi, miso, quadwp, quadhd, shared_spi);
 
   }
 
   bool begin(int32_t speed = -1) {
+     dbg_func;
      #define CO5300_RST_DELAY  200  // delay ms wait for reset finish
      #define CO5300_C_SWRESET  0x01 // Software Reset
 
      if (!spi->begin(speed))
         return false;
-     delay(100);
+     delay(300);
 
      if (ResetPin != -1) {
+        dbg_arg(ResetPin);
         pinMode(ResetPin, OUTPUT);
         digitalWrite(ResetPin, HIGH);
         delay(10);
@@ -1027,25 +1027,26 @@ public:
        };
 
      spi->batchOperation(init_ops, sizeof(init_ops));
-     _currentX = _currentY = _currentW = _currentH = -1;
+     invertDisplay(false);
+     _currentX = _currentY = _currentW = _currentH = 0xFFFF;
      _xStart = _yStart = 0;
 
-     invertDisplay(false);
      setRotation(0);
      setAddrWindow(0, 0, _width, _height);
-     fillScreen(BLACK);
-     setTextColor(WHITE);
-     setBrightness(255);
      return true;
      }
 
+  bool Debug(bool on) { debug = on; spi->Debug(on); }
+
   void setAddrWindow(int16_t x, int16_t y, uint16_t w, uint16_t h) {
+     dbg_func;
      startWrite();
      writeAddrWindow(x, y, w, h);
      endWrite();
      }
 
   void writeAddrWindow(int16_t x, int16_t y, uint16_t w, uint16_t h) {
+     dbg_func;
      #define CO5300_W_CASET               0x2A // Column Address Set
      #define CO5300_W_PASET               0x2B // Page Address Set
      #define CO5300_W_RAMWR               0x2C // Memory Write Start
@@ -1064,6 +1065,7 @@ public:
      }
 
   void setBrightness(uint8_t brightness) {
+     dbg_func;
      #define CO5300_W_WDBRIGHTNESSVALNOR  0x51 // Write Display Brightness Value in Normal Mode
      spi->beginWrite();
      spi->writeC8D8(CO5300_W_WDBRIGHTNESSVALNOR, brightness);
@@ -1071,6 +1073,7 @@ public:
      }
 
   void setContrast(uint8_t contrast) {
+     dbg_func;
      #define CO5300_W_WCE                 0x58 // Write CE     
      switch(contrast) {
         case 0: // off
@@ -1103,6 +1106,7 @@ public:
 
   **********************************************************************/
   void drawPixel(int16_t x, int16_t y, uint16_t color) {
+     dbg_func;
      startWrite();
      writePixel(x, y, color);
      endWrite();
@@ -1112,9 +1116,12 @@ public:
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
   void startWrite(void) {
+     dbg_func;
      spi->beginWrite();
      }
+
   virtual void writePixel(int16_t x, int16_t y, uint16_t color) {
+     dbg_func;
      switch(rotation) {
         case 0: //  0 degree rotation
            break;
@@ -1142,19 +1149,36 @@ public:
         spi->write16(color);
         }
      }
-//  virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
-//  virtual void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-//  virtual void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+
+  // ok, falls rotation = 0
+  void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+     dbg_func;
+     writeAddrWindow(x, y, w, h);
+     spi->writeRepeat(color, (uint32_t) w * h);
+     }
+
+  void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) {
+     dbg_func;
+     writeFillRect(x, y, 1, h, color);
+     }
+
+  void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) {
+     dbg_func;
+     writeFillRect(x, y, w, 1, color);
+     }
+
 //  virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 
   void endWrite(void) {
+     dbg_func;
      spi->endWrite();
      }
 
   // CONTROL API
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
-  virtual void setRotation(uint8_t r) {
+  void setRotation(uint8_t r) {
+     dbg_func;
      Adafruit_GFX::setRotation(r);
      /* Adafruit_GFX::setRotation(uint8_t x)
      rotation = (r & 3);
@@ -1224,6 +1248,7 @@ public:
      }
 
   void invertDisplay(bool i) {
+     dbg_func;
      #define CO5300_C_INVOFF              0x20 // Inversion Off
      #define CO5300_C_INVON               0x21 // Inversion On
      spi->sendCommand((_ips ^ i) ? CO5300_C_INVON : CO5300_C_INVOFF);
@@ -1236,9 +1261,17 @@ public:
   // It's good to implement those, even if using transaction API
 //  virtual void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 //  virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-//  virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
-//                        uint16_t color);
-//  virtual void fillScreen(uint16_t color);
+
+
+  // ok, falls rotation = 0
+  void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+     dbg_func;
+     startWrite();
+     writeFillRect(x, y, w, h, color);
+     endWrite();
+     }
+
+  // ok:  virtual void fillScreen(uint16_t color);
 
 
   // Optional and probably not necessary to change

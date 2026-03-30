@@ -16,6 +16,7 @@ bool gfx_draw_bitmap_to_framebuffer(
     uint16_t *from_bitmap, int16_t bitmap_w, int16_t bitmap_h,
     uint16_t *framebuffer, int16_t x, int16_t y, int16_t framebuffer_w, int16_t framebuffer_h)
 {
+  dbg_func;
   int16_t max_X = framebuffer_w - 1;
   int16_t max_Y = framebuffer_h - 1;
   if (
@@ -96,6 +97,7 @@ bool gfx_draw_bitmap_to_framebuffer_rotate_1(
     uint16_t *from_bitmap, int16_t bitmap_w, int16_t bitmap_h,
     uint16_t *framebuffer, int16_t x, int16_t y, int16_t framebuffer_w, int16_t framebuffer_h)
 {
+  dbg_func;
   int16_t max_X = framebuffer_w - 1;
   int16_t max_Y = framebuffer_h - 1;
   if (
@@ -157,6 +159,7 @@ bool gfx_draw_bitmap_to_framebuffer_rotate_2(
     uint16_t *from_bitmap, int16_t bitmap_w, int16_t bitmap_h,
     uint16_t *framebuffer, int16_t x, int16_t y, int16_t framebuffer_w, int16_t framebuffer_h)
 {
+  dbg_func;
   int16_t max_X = framebuffer_w - 1;
   int16_t max_Y = framebuffer_h - 1;
   if (
@@ -217,6 +220,7 @@ bool gfx_draw_bitmap_to_framebuffer_rotate_3(
     uint16_t *from_bitmap, int16_t bitmap_w, int16_t bitmap_h,
     uint16_t *framebuffer, int16_t x, int16_t y, int16_t framebuffer_w, int16_t framebuffer_h)
 {
+  dbg_func;
   int16_t max_X = framebuffer_w - 1;
   int16_t max_Y = framebuffer_h - 1;
   if (

@@ -16,18 +16,17 @@
 
 
 //AMOLED_CO5300_175* tft = new AMOLED_CO5300_175;
-DataBus *bus = new Arduino_ESP32QSPI(
-  LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_SDIO0 /* SDIO0 */, LCD_SDIO1 /* SDIO1 */,
-  LCD_SDIO2 /* SDIO2 */, LCD_SDIO3 /* SDIO3 */);
+/*DataBus*/ ESP32QSPI *bus = new ESP32QSPI(LCD_CS, LCD_SCLK, LCD_SDIO0, LCD_SDIO1, LCD_SDIO2, LCD_SDIO3, false); // = new Arduino_ESP32QSPI(LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_SDIO0 /* SDIO0 */, LCD_SDIO1 /* SDIO1 */, LCD_SDIO2 /* SDIO2 */, LCD_SDIO3 /* SDIO3 */);
 
 Arduino_CO5300 *tft = new Arduino_CO5300(
   bus, LCD_RESET /* RST */, 90 /* rotation */, LCD_WIDTH /* width */, LCD_HEIGHT /* height */, 6, 0, 0, 0);
 
 
 void setup(void) {
+  //bus = new Arduino_ESP32QSPI(LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_SDIO0 /* SDIO0 */, LCD_SDIO1 /* SDIO1 */, LCD_SDIO2 /* SDIO2 */, LCD_SDIO3 /* SDIO3 */);
   Serial.begin(115200);
-  // Serial.setDebugOutput(true);
-  // while(!Serial);
+  delay(1000);
+
 
   Wire.begin(SDA, SCL);
 
@@ -36,9 +35,9 @@ void setup(void) {
   int numCols = LCD_WIDTH / 8;
   int numRows = LCD_HEIGHT / 10;
 
-  //#ifdef GFX_EXTRA_PRE_INIT
-  //GFX_EXTRA_PRE_INIT();
-  //#endif
+
+
+
 
   // Init Display
   if (!tft->begin()) {
@@ -49,10 +48,13 @@ void setup(void) {
   tft->setBrightness(255);
 
   tft->setTextColor(GREEN);
+
   for (int x = 0; x < numRows; x++) {
     tft->setCursor(10 + x * 8, 2);
     tft->print(x, 16);
   }
+
+
   tft->setTextColor(BLUE);
   for (int y = 0; y < numCols; y++) {
     tft->setCursor(2, 12 + y * 10);
@@ -66,7 +68,7 @@ void setup(void) {
     }
   }
 
-  delay(5000);  // 5 seconds
+
 }
 //#define BLACK    0x0000
 //#define BLUE     0x001F
